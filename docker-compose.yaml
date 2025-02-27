@@ -1,0 +1,39 @@
+
+services:
+  base:
+    image: ros2_testing:base
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ROS_DISTRO: ${ROS_DISTRO:?}
+      target: base
+    stdin_open: true
+    tty: true
+    network_mode: host
+    ipc: host
+    privileged: true
+    environment:
+      - ROS_DOMAIN_ID=0
+      - DISPLAY=$DISPLAY
+      - QT_X11_NO_MITSHM=1
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
+  
+  dev:
+    extends: base
+    image: ros2_testing:dev
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+      args:
+        - UID=${UID:-1000}
+        - GID=${GID:-1000}
+        - USERNAME=${USERNAME:-user}
+    volumes:
+      - ./src:/colcon_ws/src:rw
+    user: ${USERNAME:-user}
+    command: sleep infinity
