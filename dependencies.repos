@@ -1,0 +1,9 @@
+repositories:
+  package_name:
+    type: git
+    url: https://github.com/username/package_name.git
+    version: main
+  another_package:
+    type: git
+    url: https://github.com/username/another_package.git
+    version: main

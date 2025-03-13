@@ -7,7 +7,11 @@ SHELL ["/bin/bash", "-c"]
 
 RUN apt update && apt -y upgrade
 
-RUN mkdir -p /colcon_ws/src
+RUN mkdir -p /colcon_ws/src/thirdparty
+WORKDIR /colcon_ws/src/thirdparty
+COPY dependencies.repos .
+RUN vcs import < dependencies.repos
+
 WORKDIR /colcon_ws
 RUN source /opt/ros/${ROS_DISTRO}/setup.bash \
     && rosdep install --from-paths src --ignore-src --rosdistro ${ROS_DISTRO} -y \
