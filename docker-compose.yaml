@@ -42,12 +42,12 @@ services:
         - ROS_DISTRO=${ROS_DISTRO:?}
         - UID=${UID:-1000}
         - GID=${GID:-1000}
-        - USERNAME=${USERNAME:-user}
+        - USERNAME=${CONTAINER_USER:-user}
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
-      - ${XAUTHORITY:-$HOME/.Xauthority}:/home/${USERNAME:-user}/.Xauthority
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/home/${CONTAINER_USER:-user}/.Xauthority
       - ${WS_SRC:-./src}:/colcon_ws/src:rw
     environment:
-      - XAUTHORITY=/home/${USERNAME:-user}/.Xauthority
-    user: ${USERNAME:-user}
+      - XAUTHORITY=/home/${CONTAINER_USER:-user}/.Xauthority
+    user: ${CONTAINER_USER:-user}
     command: sleep infinity
