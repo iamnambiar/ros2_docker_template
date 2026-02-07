@@ -1,11 +1,11 @@
-ARG ROS_DISTRO=humble
+ARG ROS_DISTRO=jazzy
 
 FROM osrf/ros:${ROS_DISTRO}-desktop AS base
 LABEL version="1.0"
 ENV ROS_DISTRO=${ROS_DISTRO}
 SHELL ["/bin/bash", "-c"]
 
-RUN apt update && apt -y upgrade
+RUN apt-get update && apt-get -y upgrade && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /colcon_ws/src/thirdparty
 WORKDIR /colcon_ws/src/thirdparty
@@ -26,16 +26,17 @@ ARG USERNAME=user
 ARG UID=1000
 ARG GID=1000
 
-RUN apt-get update && apt-get install -y --no-install-recommends gdb gdbserver vim
+RUN apt-get update && apt-get install -y --no-install-recommends gdb gdbserver vim \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN groupadd --gid ${GID} ${USERNAME} \
-    && useradd --uid ${GID} --gid ${UID} --create-home ${USERNAME} \
+    && useradd --uid ${UID} --gid ${GID} --create-home ${USERNAME} \
     && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME} \
     && mkdir -p /home/${USERNAME} \
     && chown -R ${UID}:${GID} /home/${USERNAME}
 
-    RUN chown -R ${UID}:${GID} /colcon_ws/
+RUN chown -R ${UID}:${GID} /colcon_ws/
 
 USER ${USERNAME}
 RUN echo "source /entrypoint.sh" >> /home/${USERNAME}/.bashrc

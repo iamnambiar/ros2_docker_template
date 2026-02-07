@@ -8,6 +8,7 @@ This repository provides a template for setting up a ROS 2 (Robot Operating Syst
 - `docker-compose.yaml`: Docker Compose configuration file to define and run multi-container Docker applications.
 - `Dockerfile`: Dockerfile to build the ROS 2 base and development images.
 - `entrypoint.sh`: Entrypoint script to source ROS 2 setup files.
+- `dependencies.repos`: VCS repository file for importing third-party ROS 2 packages.
 
 ## Getting Started
 
@@ -48,6 +49,20 @@ This repository provides a template for setting up a ROS 2 (Robot Operating Syst
 
 - `ROS_DISTRO`: Specifies the ROS 2 distribution (default: `humble`).
 - `UID`, `GID`, `USERNAME`: User ID (default: `1000`), Group ID (default: `1000`), and Username (default: `user`) for the development container.
+
+### Third-Party Dependencies
+
+To add third-party ROS 2 packages, edit `dependencies.repos` with the repository details:
+
+```yaml
+repositories:
+  my_package:
+    type: git
+    url: https://github.com/username/my_package.git
+    version: main
+```
+
+These packages are cloned into `/colcon_ws/src/thirdparty` and built during the Docker image build.
 
 ### Volumes
 

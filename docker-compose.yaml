@@ -2,7 +2,7 @@
 services:
   base:
     image: ros2_testing:base
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
       args:
@@ -12,28 +12,42 @@ services:
     tty: true
     network_mode: host
     ipc: host
-    privileged: true
+    cap_add:
+      - SYS_PTRACE
     environment:
       - ROS_DOMAIN_ID=0
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
       - NVIDIA_DRIVER_CAPABILITIES=all
+      - NVIDIA_VISIBLE_DEVICES=all
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ${XAUTHORITY:-$HOME/.Xauthority}:/root/.Xauthority
-  
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+
   dev:
     extends: base
     image: ros2_testing:dev
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
       target: dev
       args:
+        - ROS_DISTRO=${ROS_DISTRO:?}
         - UID=${UID:-1000}
         - GID=${GID:-1000}
         - USERNAME=${USERNAME:-user}
     volumes:
-      - ./src:/colcon_ws/src:rw
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-$HOME/.Xauthority}:/home/${USERNAME:-user}/.Xauthority
+      - ${WS_SRC:-./src}:/colcon_ws/src:rw
+    environment:
+      - XAUTHORITY=/home/${USERNAME:-user}/.Xauthority
     user: ${USERNAME:-user}
     command: sleep infinity
