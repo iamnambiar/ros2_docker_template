@@ -29,8 +29,8 @@ ARG GID=1000
 RUN apt-get update && apt-get install -y --no-install-recommends gdb gdbserver vim \
     && rm -rf /var/lib/apt/lists/*
 
-RUN groupadd --gid ${GID} ${USERNAME} \
-    && useradd --uid ${UID} --gid ${GID} --create-home ${USERNAME} \
+RUN groupadd --force --gid ${GID} ${USERNAME} \
+    && useradd --non-unique --uid ${UID} --gid ${GID} --create-home --no-log-init ${USERNAME} \
     && echo ${USERNAME} ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/${USERNAME} \
     && chmod 0440 /etc/sudoers.d/${USERNAME} \
     && mkdir -p /home/${USERNAME} \
