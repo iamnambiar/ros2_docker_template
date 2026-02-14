@@ -37,6 +37,8 @@ RUN userdel -r ubuntu 2>/dev/null; \
     && mkdir -p /home/${USERNAME} \
     && chown -R ${UID}:${GID} /home/${USERNAME}
 
+RUN groupadd --force render && usermod -aG render,video ${USERNAME}
+
 RUN chown -R ${UID}:${GID} /colcon_ws/
 
 USER ${USERNAME}
