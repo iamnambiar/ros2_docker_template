@@ -1,0 +1,20 @@
+services:
+  ros2:
+    build:
+      context: .
+      args:
+        ROS_DISTRO: ${ROS_DISTRO:-jazzy}
+        USER_UID: ${USER_UID:-1000}
+    image: ros2-template:${ROS_DISTRO:-jazzy}
+    environment:
+      - DISPLAY=${DISPLAY}
+      - XAUTHORITY=/home/ros/.Xauthority
+      - ROS_DISTRO=${ROS_DISTRO:-jazzy}
+    volumes:
+      - ../:/ros2_ws
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ${XAUTHORITY:-${HOME}/.Xauthority}:/home/ros/.Xauthority:ro
+    network_mode: host
+    ipc: host
+    stdin_open: true
+    tty: true
