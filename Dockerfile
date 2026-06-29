@@ -19,9 +19,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
-RUN rosdep init && rosdep update
+RUN rosdep update
 
-RUN groupadd --gid ${USER_GID} ros \
+RUN userdel -r "$(getent passwd ${USER_UID} | cut -d: -f1)" 2>/dev/null || true \
+    && groupdel "$(getent group ${USER_GID} | cut -d: -f1)" 2>/dev/null || true \
+    && groupadd --gid ${USER_GID} ros \
     && useradd --uid ${USER_UID} --gid ${USER_GID} -m --shell /bin/bash ros \
     && echo "ros ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/ros \
     && chmod 0440 /etc/sudoers.d/ros
