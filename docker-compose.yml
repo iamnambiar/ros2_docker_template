@@ -5,13 +5,14 @@ services:
       args:
         ROS_DISTRO: ${ROS_DISTRO:-jazzy}
         USER_UID: ${USER_UID:-1000}
-    image: ros2-template:${ROS_DISTRO:-jazzy}
+    image: ${IMAGE_NAME}
+    container_name: ${CONTAINER_NAME}
     environment:
       - DISPLAY=${DISPLAY}
       - XAUTHORITY=/home/ros/.Xauthority
       - ROS_DISTRO=${ROS_DISTRO:-jazzy}
     volumes:
-      - ../:/ros2_ws
+      - ../:/ros2_ws:rw
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
       - ${XAUTHORITY:-${HOME}/.Xauthority}:/home/ros/.Xauthority:ro
     network_mode: host
